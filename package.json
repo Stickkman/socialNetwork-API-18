@@ -1,0 +1,24 @@
+{
+  "name": "socialnetwork-api-18",
+  "version": "1.0.0",
+  "description": "This is an API for a social network that incorporates MongoDB as a NoSql database due to its inherent ability to work with unstructured data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stickkman/socialNetwork-API-18.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stickkman/socialNetwork-API-18/issues"
+  },
+  "homepage": "https://github.com/Stickkman/socialNetwork-API-18#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.9.2"
+  }
+}
