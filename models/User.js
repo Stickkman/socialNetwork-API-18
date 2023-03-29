@@ -1,12 +1,11 @@
 const {Schema, model} = require('mongoose'); // destructure 'Schema' and 'model' objects from required mongoose package
-const { Thought } = require('.');
                                                 // Schema for creating new schema objects to define the structure
                                                 // model for creating new models, maps to mongodb collection
 
 const userSchema = new Schema(
     {
         username: { // username required, must be a unique string, remove whitespace with trim before and after username
-            type:String, 
+            type: String, 
             unique: true, 
             required: true, 
             trim: true
@@ -37,5 +36,6 @@ userSchema.virtual('friendCount').get(function() { // virtual that retrieves the
     return this.friends.length;
 });
 
+const User = model('User', userSchema);
 
 module.exports = User;  
