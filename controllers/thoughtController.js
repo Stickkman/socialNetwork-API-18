@@ -1,23 +1,27 @@
 // Thought Controller
 
+const { User, Thought} = require('../models');
+
 const thoughtController = {
 
 // GET ALL THOUGHTS
     getAllThoughts(req, res) {
         Thought.find({})
-        .populate({path: 'reactions', select: '-__v'}) // include reactions, exclude __v
-        .select('__v')
-        .sort({_id: -1})
-        .then(dbThoughtsData => res.json(dbThoughtsData))
-        .catch(e => {console.log(e); res.status(400).json(e);
-        });
-    },
+            .select('-__v')
+            .sort({ _id: -1 })
+            .then(dbThoughtData => res.json(dbThoughtData))
+            .catch(err => {
+                console.log(err);
+                res.sendStatus(400);
+            });
+        },
 
 // GET THOUGHT BY ID
-    getThoughtById(req, res) {
+    getThoughtById({params}, res) {
         Thought.findOne({_id: params.thoughtId})
-        .populate({path: 'reactions', select: '-__v'})
         .select('-__v')
+   
+        
         .then(dbUserData => { 
             if (!dbUserData) {res.status(404).json({message: '! Thought Id Not Found !'}); return;
             }
@@ -28,25 +32,26 @@ const thoughtController = {
     },
 
 // CREATE A NEW THOUGHT
-        createThought(req, res) {
-            Thought.create(req.body)
-            .then(({_id}) => { returnUser.findOneAndUpdate(
-                {_id:body.userId},
-                {$push: {thoughts: _id}}, // push created thoughts id to thoughts array
+        createThought(req, res) {  console.log(req.userId + 'WFT1 '); console.log(req.body.username + 'WFT2 '); 
+            Thought.create(req.body) 
+            .then(dbThoughtData => {return User.findOneAndUpdate(
+                {username: req.body.username},
+              
+                {$push: {thoughts: dbThoughtData._id}}, // push created thoughts id to thoughts array
                 {new: true});
-            })
-            .then(dbUserData => { 
-                if (!dbUserData) {res.status(404).json({message: '! User Id Not Found !'}); return;
+            }) 
+            .then(dbThoughtData => {
+                if (!dbThoughtData) {res.status(404).json({message: '! User Id Not Found !'}); return;
                 }
-                res.json(dbUserData);
+                res.json(dbThoughtData);
             })
             .catch(e => {console.log(e); res.status(400).json(e);
-            });
+            }); 
         },
 
 // UPDATE THOUGHT BY ID
         updateThought({params, body}, res) {
-            Thought.findOneAndUpdate({_id: params.ThoughtId},
+            Thought.findOneAndUpdate({_id: params.thoughtId},
             {$set: body}, {new: true, runValidators: true})
             .then(dbThoughtData => { 
                 if (!dbThoughtData) {res.status(404).json({message: '! Thought Id Not Found !'}); return;
@@ -58,8 +63,8 @@ const thoughtController = {
         },
 
 // DELETE THOUGHT BY ID
-    deleteThought({params}, res) {
-        Thought.findOneAndDelete({_id: params.ThoughtId})
+    deleteThought(req, res) {
+        Thought.findOneAndDelete({_id: req.params.thoughtId})
         .then(dbDeleteThoughtData => {
             if (!dbDeleteThoughtData) {res.status(404).json({message: '! Thought Id Not Found !'}); return;
             }
